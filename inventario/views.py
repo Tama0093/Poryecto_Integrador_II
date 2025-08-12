@@ -1,8 +1,15 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
 
+@login_required
 def home(request):
-    return HttpResponse("<h1>Sistema de Inventario funcionando</h1>")
-
-
+    user = request.user
+    if user.groups.filter(name='Administrador').exists():
+        role = 'Administrador'
+    elif user.groups.filter(name='Subadministrador').exists():
+        role = 'Subadministrador'
+    elif user.groups.filter(name='Cajero').exists():
+        role = 'Cajero'
+    else:
+        role = 'Sin rol'
+    return render(request, 'inventario/home.html', {'role': role})

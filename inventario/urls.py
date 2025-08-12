@@ -1,7 +1,7 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from inventario import views  # ✅ Importar vistas desde la app inventario
+from inventario import views  # Importar vistas desde la app inventario
 
 urlpatterns = [
     # Página de inicio

@@ -3,6 +3,10 @@ from pathlib import Path
 # Ruta base del proyecto (carpeta donde está manage.py)
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+SECRET_KEY = 'django-insecure-87!@tu_clave_aqui@1234'
+
+
 # Modo desarrollo activado
 DEBUG = True  # En producción lo cambiaremos a False
 
@@ -18,7 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'inventario.apps.InventarioConfig',  # Nuestra app
+    'inventario.apps.InventarioConfig',  # Mi app
 ]
 
 MIDDLEWARE = [
