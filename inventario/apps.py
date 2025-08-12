@@ -6,3 +6,4 @@ class InventarioConfig(AppConfig):
 
     def ready(self):
         import inventario.signals
+

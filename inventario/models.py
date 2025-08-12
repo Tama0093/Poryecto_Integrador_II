@@ -1,3 +1,4 @@
+# models.py
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -10,13 +11,22 @@ class Sucursal(models.Model):
     def __str__(self):
         return self.nombre
 
+
 class Perfil(models.Model):
+    ROLES = (
+        ('Administrador', 'Administrador'),
+        ('Subadministrador', 'Subadministrador'),
+        ('Cajero', 'Cajero'),
+    )
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
-    sucursal = models.ForeignKey(Sucursal, on_delete=models.SET_NULL, null=True, blank=True)
+    sucursales = models.ManyToManyField(Sucursal, blank=True, related_name='perfiles')  # varias sucursales
+    rol = models.CharField(max_length=20, choices=ROLES, default='Cajero')
 
     def __str__(self):
-        suc = self.sucursal.nombre if self.sucursal else "Sin sucursal"
-        return f"{self.user.username} — {suc}"
+        lista_sucursales = ", ".join(s.nombre for s in self.sucursales.all())
+        return f"{self.user.username} — {self.rol} — {lista_sucursales if lista_sucursales else 'Sin sucursal'}"
+
 
 
 class Producto(models.Model):
