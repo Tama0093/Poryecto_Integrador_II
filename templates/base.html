@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Inventario — Expendio</title>
+</head>
+<body>
+  {% if user.is_authenticated %}
+    Hola, {{ user.username }} | <a href="{% url 'logout' %}">Salir</a>
+  {% else %}
+    <a href="{% url 'login' %}">Ingresar</a>
+  {% endif %}
+  <hr>
+  {% block content %}{% endblock %}
+</body>
+</html>
