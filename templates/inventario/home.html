@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio — Inventario{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-12">
+    <h1 class="display-5">Bienvenido {{ user.username|title }}</h1>
+    <p class="lead">Tu rol: <strong>{{ role }}</strong></p>
+  </div>
+</div>
+
+<div class="row mt-4">
+  {% for opcion in opciones %}
+    <div class="col-md-4 mb-3">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">{{ opcion.titulo }}</h5>
+          <p class="card-text">{{ opcion.desc }}</p>
+          <a href="#" class="btn btn-primary">Ir</a>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <p>No tienes opciones disponibles para tu rol.</p>
+  {% endfor %}
+</div>
+{% endblock %}

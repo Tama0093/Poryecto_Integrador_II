@@ -7,7 +7,7 @@ urlpatterns = [
     # Página de inicio
     path('', views.home, name='home'),
 
-    # Panel de administración de Django
+    # Panel de administración
     path('admin/', admin.site.urls),
 
     # Autenticación

@@ -4,7 +4,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = 'ingcesar093@gmail.com!@1130618073'
+SECRET_KEY = '_d@x@jb6vdv+l79=k^y2b)b9ecl14x4!bvy*4&sycw-rz^q16w'
 
 
 # Modo desarrollo activado
