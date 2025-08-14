@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '_d@x@jb6vdv+l79=k^y2b)b9ecl14x4!bvy*4&sycw-rz^q16w'
 
 
-# Modo desarrollo activado
+
 DEBUG = True  # En producción lo cambiaremos a False
 
 # Lista de hosts permitidos (vacío en desarrollo = solo local)
