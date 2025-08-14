@@ -1,20 +1,11 @@
 from pathlib import Path
 
-# Ruta base del proyecto (carpeta donde está manage.py)
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-SECRET_KEY = '_d@x@jb6vdv+l79=k^y2b)b9ecl14x4!bvy*4&sycw-rz^q16w'
-
-
-
-DEBUG = True  # En producción lo cambiaremos a False
-
-# Lista de hosts permitidos (vacío en desarrollo = solo local)
+SECRET_KEY = '<tu_clave>'
+DEBUG = True
 ALLOWED_HOSTS = []
 
-
-# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -22,13 +13,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'inventario.apps.InventarioConfig',  # Mi app
+    'inventario.apps.InventarioConfig',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
+    'django.middleware.common.CommonMiddleware',  # usa APPEND_SLASH
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -40,7 +31,7 @@ ROOT_URLCONF = 'sistema.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Carpeta de plantillas en la raíz
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -48,14 +39,11 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'inventario.context_processors.role_context',
             ],
         },
     },
 ]
-
-WSGI_APPLICATION = 'sistema.wsgi.application'
-
-# ... otras configuraciones arriba ...
 
 WSGI_APPLICATION = 'sistema.wsgi.application'
 
@@ -66,9 +54,10 @@ DATABASES = {
     }
 }
 
-# Archivos estáticos (CSS, JS, imágenes)
 STATIC_URL = '/static/'
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'login'
+
+APPEND_SLASH = True

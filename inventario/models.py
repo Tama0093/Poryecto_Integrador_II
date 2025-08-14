@@ -20,12 +20,12 @@ class Perfil(models.Model):
     )
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
-    sucursales = models.ManyToManyField(Sucursal, blank=True, related_name='perfiles')  # varias sucursales
+    sucursales = models.ManyToManyField(Sucursal, blank=True, related_name='perfiles')  # 👈 M2M
     rol = models.CharField(max_length=20, choices=ROLES, default='Cajero')
 
     def __str__(self):
-        lista_sucursales = ", ".join(s.nombre for s in self.sucursales.all())
-        return f"{self.user.username} — {self.rol} — {lista_sucursales if lista_sucursales else 'Sin sucursal'}"
+        sucs = ", ".join(s.nombre for s in self.sucursales.all()) or "Sin sucursales"
+        return f"{self.user.username} — {self.rol} — {sucs}"
 
 
 

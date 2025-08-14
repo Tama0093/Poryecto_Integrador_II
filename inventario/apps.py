@@ -1,3 +1,4 @@
+# inventario/apps.py
 from django.apps import AppConfig
 
 class InventarioConfig(AppConfig):
@@ -5,5 +6,4 @@ class InventarioConfig(AppConfig):
     name = 'inventario'
 
     def ready(self):
-        import inventario.signals
-
+        import inventario.signals  # si usas señales
