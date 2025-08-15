@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Detalle de caja{% endblock %}
+{% block content %}
+<h2>Caja {{ caja.sucursal.nombre }} — {{ caja.fecha }} — {{ caja.estado }}</h2>
+
+<div class="mb-3">
+  <a class="btn btn-success {% if caja.estado != 'ABIERTA' %}disabled{% endif %}" href="{% url 'venta_nueva' caja.id %}">Registrar venta</a>
+  <a class="btn btn-danger {% if caja.estado != 'ABIERTA' %}disabled{% endif %}" href="{% url 'caja_cerrar' caja.id %}">Cerrar caja</a>
+</div>
+
+<h4>Ventas</h4>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Hora</th>
+      <th>Producto</th>
+      <th>Cant.</th>
+      <th>P. Unit.</th>
+      <th>Total</th>
+      <th>Usuario</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for v in ventas %}
+      <tr>
+        <td>{{ v.creado_en|date:"H:i" }}</td>
+        <td>{{ v.producto.nombre }}</td>
+        <td>{{ v.cantidad }}</td>
+        <td>{{ v.precio_unitario }}</td>
+        <td>{{ v.total }}</td>
+        <td>{{ v.usuario.username }}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="6">Sin ventas.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

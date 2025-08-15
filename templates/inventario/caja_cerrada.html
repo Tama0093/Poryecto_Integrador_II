@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Cerrar caja{% endblock %}
+{% block content %}
+<h2>Cerrar caja — {{ caja.sucursal.nombre }} — {{ caja.fecha }}</h2>
+<p><strong>Apertura:</strong> {{ caja.apertura_monto }}</p>
+<p><strong>Total vendido:</strong> {{ total_vendido }}</p>
+<p><strong>Total esperado en caja:</strong> {{ esperado }}</p>
+
+<form method="post">
+  {% csrf_token %}
+  <button class="btn btn-danger" type="submit">Confirmar cierre</button>
+  <a class="btn btn-secondary" href="{% url 'caja_detalle' caja.id %}">Cancelar</a>
+</form>
+{% endblock %}

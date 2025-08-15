@@ -2,6 +2,7 @@ from django.contrib import admin
 from .models import Sucursal, Perfil
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
+from .models import Caja, Venta
 
 @admin.register(Sucursal)
 class SucursalAdmin(admin.ModelAdmin):
@@ -32,6 +33,19 @@ class PerfilInline(admin.StackedInline):
 
 class UserAdmin(BaseUserAdmin):
     inlines = (PerfilInline,)
+
+
+@admin.register(Caja)
+class CajaAdmin(admin.ModelAdmin):
+    list_display = ('sucursal', 'fecha', 'apertura_monto', 'cierre_monto', 'estado', 'creado_en')
+    list_filter = ('sucursal', 'estado', 'fecha')
+    search_fields = ('sucursal__nombre',)
+
+@admin.register(Venta)
+class VentaAdmin(admin.ModelAdmin):
+    list_display = ('caja', 'producto', 'cantidad', 'precio_unitario', 'total', 'usuario', 'creado_en')
+    list_filter = ('caja__sucursal', 'producto', 'usuario', 'creado_en')
+    search_fields = ('producto__nombre', 'usuario__username')
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)

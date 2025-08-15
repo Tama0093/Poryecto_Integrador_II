@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Abrir caja{% endblock %}
+{% block content %}
+<h2>Abrir caja</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button class="btn btn-primary" type="submit">Abrir</button>
+  <a class="btn btn-secondary" href="{% url 'caja_estado_hoy' %}">Cancelar</a>
+</form>
+{% endblock %}
