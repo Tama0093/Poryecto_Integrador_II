@@ -13,7 +13,7 @@ class SucursalAdmin(admin.ModelAdmin):
 class PerfilAdmin(admin.ModelAdmin):
     list_display = ('user', 'rol', 'get_sucursales')
     search_fields = ('user__username', 'sucursales__nombre')
-    filter_horizontal = ('sucursales',)  # 👈 selector múltiple en la vista de Perfil
+    
 
     def get_sucursales(self, obj):
         return ", ".join([s.nombre for s in obj.sucursales.all()])
@@ -23,8 +23,7 @@ class PerfilInline(admin.StackedInline):
     model = Perfil
     can_delete = False
     verbose_name_plural = 'Perfil'
-    filter_horizontal = ('sucursales',)  # 👈 selector múltiple también dentro del inline
-
+    
     # Evitar duplicado al crear usuario (el perfil lo crea la señal post_save)
     def get_extra(self, request, obj=None, **kwargs):
         # Si estás en "agregar usuario" (obj=None), no muestres formulario inline

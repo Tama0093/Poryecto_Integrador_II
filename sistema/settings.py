@@ -2,6 +2,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 SECRET_KEY = '<tu_clave>'
 DEBUG = True
 ALLOWED_HOSTS = []

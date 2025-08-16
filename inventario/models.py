@@ -12,20 +12,22 @@ class Sucursal(models.Model):
         return self.nombre
 
 
-class Perfil(models.Model):
-    ROLES = (
-        ('Administrador', 'Administrador'),
-        ('Subadministrador', 'Subadministrador'),
-        ('Cajero', 'Cajero'),
-    )
+# Definición de roles permitidos en el sistema
+ROLES = (
+    ('Administrador', 'Administrador'),
+    ('Subadministrador', 'Subadministrador'),
+    ('Cajero', 'Cajero'),
+    ('Supervisión', 'Supervisión'),
+)
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
-    sucursales = models.ManyToManyField(Sucursal, blank=True, related_name='perfiles')  # 👈 M2M
-    rol = models.CharField(max_length=20, choices=ROLES, default='Cajero')
+
+class Perfil(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    rol = models.CharField(max_length=30, choices=ROLES)
+    sucursal = models.ForeignKey(Sucursal, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        sucs = ", ".join(s.nombre for s in self.sucursales.all()) or "Sin sucursales"
-        return f"{self.user.username} — {self.rol} — {sucs}"
+        return f"{self.user.username} - {self.rol}"
 
 
 

@@ -11,17 +11,18 @@ from .forms import CajaAperturaForm, VentaForm
 from .permissions import role_and_sucursales
 
 
+
 @login_required
 def caja_estado_hoy(request):
     """
-    Lista las cajas del día por sucursal accesible al usuario.
-    Ver está permitido para cualquier rol autenticado.
+    Ver estado de las cajas del día.
+    (Ver está permitido para cualquier rol autenticado con acceso a la(s) sucursal(es).)
     """
     rol, sucs = role_and_sucursales(request.user)
     hoy = timezone.now().date()
 
+    # Admin ve todas (cámbialo a none() si no quieres que vea nada)
     if rol == 'Administrador':
-        # Si quieres que Admin no vea nada, filtra por none(): Caja.objects.none()
         cajas = Caja.objects.filter(fecha=hoy).select_related('sucursal')
     else:
         cajas = Caja.objects.filter(fecha=hoy, sucursal__in=sucs).select_related('sucursal')
@@ -33,8 +34,6 @@ def caja_estado_hoy(request):
 def caja_abrir(request):
     """
     Solo CAJERO puede abrir caja.
-    - Limita sucursal al conjunto permitido del cajero.
-    - Evita duplicados por (sucursal, fecha).
     """
     rol, sucs = role_and_sucursales(request.user)
     if rol != 'Cajero':
@@ -45,11 +44,11 @@ def caja_abrir(request):
         if form.is_valid():
             caja = form.save(commit=False)
 
-            # Validar que la sucursal esté permitida para este cajero
+            # Seguridad: la sucursal debe estar permitida al cajero
             if caja.sucursal not in sucs:
                 raise PermissionDenied("No puedes abrir caja en esa sucursal.")
 
-            # Evitar duplicados por día/sucursal
+            # Evitar 2 cajas mismo día y sucursal
             if Caja.objects.filter(sucursal=caja.sucursal, fecha=caja.fecha).exists():
                 messages.error(request, "Ya existe una caja para esa sucursal en esa fecha.")
                 return redirect('caja_estado_hoy')
@@ -69,36 +68,32 @@ def caja_abrir(request):
 @login_required
 def caja_detalle(request, caja_id):
     """
-    Ver detalle de la caja (ventas, estado).
-    Ver está permitido para cualquier rol autenticado dentro de sus sucursales.
+    Ver detalle de una caja (ventas, estado).
+    (Ver está permitido para cualquier rol con acceso a esa sucursal.)
     """
     caja = get_object_or_404(Caja, pk=caja_id)
     rol, sucs = role_and_sucursales(request.user)
 
+    # Si no es Admin, validar que la caja sea de sus sucursales
     if rol != 'Administrador' and caja.sucursal not in sucs:
-        # Admin puede ver todo si así lo decides; si no, quita esta excepción
         raise PermissionDenied("No puedes ver esta caja.")
 
     ventas = caja.ventas.select_related('producto').order_by('-creado_en')
-    return render(request, 'inventario/caja_detalle.html', {
-        'caja': caja,
-        'ventas': ventas
-    })
+    return render(request, 'inventario/caja_detalle.html', {'caja': caja, 'ventas': ventas})
 
 
 @login_required
 def venta_nueva(request, caja_id):
     """
-    Solo CAJERO puede registrar ventas.
-    - Caja debe estar ABIERTA.
-    - Sucursal de la caja debe estar dentro de sus sucursales permitidas.
+    Solo CAJERO puede registrar ventas en una caja ABIERTA de una sucursal permitida.
+    El formulario muestra productos de todas sus sucursales, pero valida
+    que el producto pertenezca a la sucursal de la caja actual.
     """
     caja = get_object_or_404(Caja, pk=caja_id, estado='ABIERTA')
     rol, sucs = role_and_sucursales(request.user)
 
     if rol != 'Cajero':
         raise PermissionDenied("Solo el Cajero puede registrar ventas.")
-
     if caja.sucursal not in sucs:
         raise PermissionDenied("No puedes vender en esta sucursal.")
 
@@ -131,20 +126,16 @@ def venta_nueva(request, caja_id):
 def caja_cerrar(request, caja_id):
     """
     Solo CAJERO puede cerrar caja.
-    - Caja debe estar ABIERTA.
-    - Sucursal de la caja debe estar dentro de sus sucursales permitidas.
     """
     caja = get_object_or_404(Caja, pk=caja_id, estado='ABIERTA')
     rol, sucs = role_and_sucursales(request.user)
 
     if rol != 'Cajero':
         raise PermissionDenied("Solo el Cajero puede cerrar caja.")
-
     if caja.sucursal not in sucs:
         raise PermissionDenied("No puedes cerrar caja en esta sucursal.")
 
     if request.method == 'POST':
-        # total vendido (suma de líneas)
         total_vendido = caja.ventas.aggregate(s=Sum('total'))['s'] or 0
         caja.cierre_monto = caja.apertura_monto + total_vendido
         caja.cierre_usuario = request.user

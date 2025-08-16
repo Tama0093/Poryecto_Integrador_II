@@ -1,28 +1,35 @@
-{% extends "base.html" %}
-
-{% block title %}Inicio — Inventario{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="row">
-  <div class="col-12">
-    <h1 class="display-5">Bienvenido {{ user.username|title }}</h1>
-    <p class="lead">Tu rol: <strong>{{ role }}</strong></p>
-  </div>
-</div>
-
-<div class="row mt-4">
-  {% for opcion in opciones %}
-    <div class="col-md-4 mb-3">
-      <div class="card h-100">
-        <div class="card-body">
-          <h5 class="card-title">{{ opcion.titulo }}</h5>
-          <p class="card-text">{{ opcion.desc }}</p>
-         <a href="{% url 'caja_estado_hoy' %}" class="btn btn-primary">Ir</a>
+<div class="container mt-5">
+  <div class="row">
+    {% if request.user.perfil.rol == 'Cajero' %}
+      <div class="col-md-4">
+        <div class="card p-4 mb-4">
+          <h5><strong>Caja y Ventas</strong></h5>
+          <p>Apertura, ventas y cierre diario.</p>
+          <a class="btn btn-primary" href="{% url 'caja_estado_hoy' %}">Ir</a>
         </div>
       </div>
-    </div>
-  {% empty %}
-    <p>No tienes opciones disponibles para tu rol.</p>
-  {% endfor %}
+    {% endif %}
+
+    {% if request.user.perfil.rol != 'Cajero' %}
+      <div class="col-md-4">
+        <div class="card p-4 mb-4">
+          <h5><strong>Inventario</strong></h5>
+          <p>Registrar y consultar productos.</p>
+          <a class="btn btn-primary" href="{% url 'producto_list' %}">Ir</a>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card p-4 mb-4">
+          <h5><strong>Reportes</strong></h5>
+          <p>Exportar ventas a Excel.</p>
+          <a class="btn btn-primary" href="{% url 'exportar_ventas_excel' %}">Ir</a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
 </div>
 {% endblock %}
