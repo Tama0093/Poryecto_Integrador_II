@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Editar usuario{% endblock %}
+{% block content %}
+<h2 class="mb-3">Editar usuario: {{ user_obj.username }}</h2>
+<form method="post" class="card p-3 shadow-sm">
+  {% csrf_token %}
+  <h5 class="mb-2">Cuenta</h5>
+  {{ user_form.non_field_errors }}
+  <div class="row">
+    <div class="col-md-4 mb-3">
+      <label>Usuario</label>
+      {{ user_form.username }} {{ user_form.username.errors }}
+    </div>
+    <div class="col-md-4 mb-3">
+      <label>Email</label>
+      {{ user_form.email }} {{ user_form.email.errors }}
+    </div>
+    <div class="col-md-4 mb-3">
+      <label>Nueva contraseña (opcional)</label>
+      {{ user_form.password }} {{ user_form.password.errors }}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-3 mb-3">
+      <label>Activo</label>
+      {{ user_form.is_active }}
+    </div>
+    <div class="col-md-3 mb-3">
+      <label>Staff</label>
+      {{ user_form.is_staff }}
+    </div>
+  </div>
+
+  <h5 class="mb-2">Perfil</h5>
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label>Rol</label>
+      {{ perfil_form.rol }} {{ perfil_form.rol.errors }}
+    </div>
+    <div class="col-md-6 mb-3">
+      <label>Sucursal</label>
+      {{ perfil_form.sucursal }} {{ perfil_form.sucursal.errors }}
+    </div>
+  </div>
+
+  <button class="btn btn-primary" type="submit">Guardar</button>
+  <a class="btn btn-outline-secondary" href="{% url 'usuario_list' %}">Cancelar</a>
+</form>
+{% endblock %}

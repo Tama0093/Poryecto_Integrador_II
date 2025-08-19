@@ -1,12 +1,40 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% block title %}Nuevo usuario{% endblock %}
 {% block content %}
-  <div class="container mt-4">
-    <h2>Crear Usuario</h2>
-    <form method="POST">
-      {% csrf_token %}
-      {{ user_form.as_p }}
-      {{ perfil_form.as_p }}
-      <button type="submit" class="btn btn-primary">Guardar</button>
-    </form>
+<h2 class="mb-3">Nuevo usuario</h2>
+<form method="post" class="card p-3 shadow-sm">
+  {% csrf_token %}
+  <h5 class="mb-2">Cuenta</h5>
+  {{ u_form.non_field_errors }}
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label>Usuario</label>
+      {{ u_form.username }} {{ u_form.username.errors }}
+    </div>
+    <div class="col-md-6 mb-3">
+      <label>Contraseña</label>
+      {{ u_form.password1 }} {{ u_form.password1.errors }}
+    </div>
+    <div class="col-md-6 mb-3">
+      <label>Repite contraseña</label>
+      {{ u_form.password2 }} {{ u_form.password2.errors }}
+    </div>
   </div>
+
+  <h5 class="mb-2">Perfil</h5>
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label>Rol</label>
+      {{ p_form.rol }} {{ p_form.rol.errors }}
+    </div>
+    <div class="col-md-6 mb-3">
+      <label>Sucursal</label>
+      {{ p_form.sucursal }} {{ p_form.sucursal.errors }}
+    </div>
+  </div>
+
+  <button class="btn btn-primary" type="submit">Guardar</button>
+  <a class="btn btn-outline-secondary" href="{% url 'usuario_list' %}">Cancelar</a>
+</form>
 {% endblock %}
+

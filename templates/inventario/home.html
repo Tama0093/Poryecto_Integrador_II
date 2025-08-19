@@ -1,35 +1,46 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% block title %}Home | Inventario{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-  <div class="row">
-    {% if request.user.perfil.rol == 'Cajero' %}
-      <div class="col-md-4">
-        <div class="card p-4 mb-4">
-          <h5><strong>Caja y Ventas</strong></h5>
-          <p>Apertura, ventas y cierre diario.</p>
-          <a class="btn btn-primary" href="{% url 'caja_estado_hoy' %}">Ir</a>
-        </div>
-      </div>
-    {% endif %}
+  <h1 class="mb-4">Inicio</h1>
 
-    {% if request.user.perfil.rol != 'Cajero' %}
-      <div class="col-md-4">
-        <div class="card p-4 mb-4">
-          <h5><strong>Inventario</strong></h5>
-          <p>Registrar y consultar productos.</p>
-          <a class="btn btn-primary" href="{% url 'producto_list' %}">Ir</a>
-        </div>
-      </div>
+  {% if role %}
+    <p><strong>Rol:</strong> {{ role }}</p>
+  {% endif %}
 
-      <div class="col-md-4">
-        <div class="card p-4 mb-4">
-          <h5><strong>Reportes</strong></h5>
-          <p>Exportar ventas a Excel.</p>
-          <a class="btn btn-primary" href="{% url 'exportar_ventas_excel' %}">Ir</a>
+  <div class="row g-3">
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">Inventario</h5>
+          <p class="card-text">Registrar y consultar productos.</p>
+          <a href="{% url 'producto_list' %}" class="btn btn-primary">Ir a Productos</a>
         </div>
       </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">Caja y Ventas</h5>
+          <p class="card-text">Abrir caja, registrar ventas y cerrar.</p>
+          <a href="{% url 'caja_estado' %}" class="btn btn-primary">Ir a Caja</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Si quieres sección de administración solo para admin/subadmin -->
+    {% if user.perfil and user.perfil.rol in 'Administrador Subadministrador' %}
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">Administración</h5>
+          <p class="card-text">Usuarios y Sucursales.</p>
+          <a href="{% url 'sucursal_list' %}" class="btn btn-outline-primary me-2 mb-2">Sucursales</a>
+          <a href="{% url 'usuario_list' %}" class="btn btn-outline-primary mb-2">Usuarios</a>
+        </div>
+      </div>
+    </div>
     {% endif %}
   </div>
-</div>
 {% endblock %}

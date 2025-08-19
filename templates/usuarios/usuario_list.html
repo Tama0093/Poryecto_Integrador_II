@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Usuarios{% endblock %}
+{% block content %}
+<h2 class="mb-3">Usuarios</h2>
+<a class="btn btn-primary mb-3" href="{% url 'usuario_create' %}">Nuevo usuario</a>
+
+<table class="table table-striped">
+  <thead>
+    <tr><th>Usuario</th><th>Rol</th><th>Sucursal</th><th>Activo</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for u in usuarios %}
+      <tr>
+        <td>{{ u.username }}</td>
+        <td>{{ u.perfil.rol|default:"-" }}</td>
+        <td>{{ u.perfil.sucursal|default:"-" }}</td>
+        <td>{{ u.is_active|yesno:"Sí,No" }}</td>
+        <td class="text-nowrap">
+          <a class="btn btn-sm btn-outline-primary" href="{% url 'usuario_update' u.id %}">Editar</a>
+          <a class="btn btn-sm btn-outline-danger" href="{% url 'usuario_delete' u.id %}">Eliminar</a>
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="5">No hay usuarios.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

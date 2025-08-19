@@ -1,12 +1,23 @@
-<!-- inventario/templates/sucursales/crear_sucursal.html -->
-{% extends 'base.html' %}
-
+{% extends "base.html" %}
+{% block title %}{{ form.instance.pk|yesno:"Editar sucursal,Nueva sucursal" }}{% endblock %}
 {% block content %}
-  <h2>Crear nueva sucursal</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Crear Sucursal</button>
-  </form>
+<h2 class="mb-3">{{ form.instance.pk|yesno:"Editar sucursal,Nueva sucursal" }}</h2>
+<form method="post" class="card p-3 shadow-sm">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  <div class="mb-3">
+    <label class="form-label">Nombre</label>
+    {{ form.nombre }} {{ form.nombre.errors }}
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Dirección</label>
+    {{ form.direccion }} {{ form.direccion.errors }}
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Teléfono</label>
+    {{ form.telefono }} {{ form.telefono.errors }}
+  </div>
+  <button class="btn btn-primary" type="submit">Guardar</button>
+  <a class="btn btn-outline-secondary" href="{% url 'sucursal_list' %}">Cancelar</a>
+</form>
 {% endblock %}
-

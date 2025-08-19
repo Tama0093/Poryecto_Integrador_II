@@ -6,4 +6,5 @@ class InventarioConfig(AppConfig):
     name = 'inventario'
 
     def ready(self):
-        import inventario.signals  # si usas señales
+        # Carga señales si existen (creación automática de Perfil)
+        import inventario.signals  # noqa: F401

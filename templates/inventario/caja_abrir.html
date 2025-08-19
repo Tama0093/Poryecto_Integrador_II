@@ -1,11 +1,27 @@
 {% extends "base.html" %}
-{% block title %}Abrir caja{% endblock %}
+{% block title %}Abrir Caja{% endblock %}
+
 {% block content %}
-<h2>Abrir caja</h2>
-<form method="post">
+<h2 class="mb-4">Abrir caja</h2>
+
+<form method="post" class="card p-3 shadow-sm">
   {% csrf_token %}
-  {{ form.as_p }}
+  <div class="mb-3">
+    <label class="form-label">Sucursal</label>
+    {{ form.sucursal }}
+    {{ form.sucursal.errors }}
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Fecha</label>
+    {{ form.fecha }}
+    {{ form.fecha.errors }}
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Monto de apertura</label>
+    {{ form.apertura_monto }}
+    {{ form.apertura_monto.errors }}
+  </div>
   <button class="btn btn-primary" type="submit">Abrir</button>
-  <a class="btn btn-secondary" href="{% url 'caja_estado_hoy' %}">Cancelar</a>
+  <a class="btn btn-outline-secondary" href="{% url 'caja_estado' %}">Cancelar</a>
 </form>
 {% endblock %}

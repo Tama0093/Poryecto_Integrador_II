@@ -1,34 +1,36 @@
 {% extends "base.html" %}
-{% block title %}Caja de hoy{% endblock %}
+{% block title %}Estado de caja{% endblock %}
+
 {% block content %}
-<h2>Caja — {{ hoy }}</h2>
-<p><a class="btn btn-primary" href="{% url 'caja_abrir' %}">Abrir caja</a></p>
+<h2 class="mb-4">Cajas de hoy</h2>
+
+<a class="btn btn-primary mb-3" href="{% url 'caja_abrir' %}">Abrir nueva caja</a>
 
 <table class="table table-striped">
   <thead>
     <tr>
       <th>Sucursal</th>
+      <th>Fecha</th>
       <th>Estado</th>
       <th>Apertura</th>
       <th>Cierre</th>
-      <th>Total ventas</th>
       <th></th>
     </tr>
   </thead>
   <tbody>
   {% for c in cajas %}
     <tr>
-      <td>{{ c.sucursal.nombre }}</td>
+      <td>{{ c.sucursal }}</td>
+      <td>{{ c.fecha }}</td>
       <td>{{ c.estado }}</td>
       <td>{{ c.apertura_monto }}</td>
-      <td>{{ c.cierre_monto|default:"—" }}</td>
-      <td>{{ c.total_ventas }}</td>
+      <td>{{ c.cierre_monto|default:"-" }}</td>
       <td>
-        <a class="btn btn-sm btn-outline-primary" href="{% url 'caja_detalle' c.id %}">Ver</a>
+        <a class="btn btn-sm btn-outline-primary" href="{% url 'caja_detalle' c.id %}">Detalle</a>
       </td>
     </tr>
   {% empty %}
-    <tr><td colspan="6">No hay caja registrada hoy.</td></tr>
+    <tr><td colspan="6">No hay cajas hoy.</td></tr>
   {% endfor %}
   </tbody>
 </table>

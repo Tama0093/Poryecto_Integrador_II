@@ -1,11 +1,21 @@
 {% extends "base.html" %}
 {% block title %}Nueva venta{% endblock %}
+
 {% block content %}
-<h2>Nueva venta — {{ caja.sucursal.nombre }} — {{ caja.fecha }}</h2>
-<form method="post">
+<h2 class="mb-3">Nueva venta</h2>
+
+<form method="post" class="card p-3 shadow-sm">
   {% csrf_token %}
-  {{ form.as_p }}
-  <button class="btn btn-primary" type="submit">Registrar</button>
-  <a class="btn btn-secondary" href="{% url 'caja_detalle' caja.id %}">Volver</a>
+  <div class="mb-3">
+    <label class="form-label">Producto</label>
+    {{ form.producto }} {{ form.producto.errors }}
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Cantidad</label>
+    {{ form.cantidad }} {{ form.cantidad.errors }}
+  </div>
+  <button class="btn btn-primary" type="submit">Guardar</button>
+  <a class="btn btn-outline-secondary" href="{% url 'caja_detalle' caja.id %}">Cancelar</a>
 </form>
 {% endblock %}
+

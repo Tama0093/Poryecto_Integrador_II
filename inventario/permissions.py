@@ -1,35 +1,38 @@
+# inventario/permissions.py
 from .models import Sucursal
 
-def role_and_sucursal(user, sucursal_id):
+def user_role(user):
     """
-    Verifica si el usuario tiene permiso para operar sobre una sucursal específica.
-    Aplica a roles que deben estar asociados a una única sucursal (no múltiples).
+    Retorna el rol del usuario según su Perfil, o None si no tiene perfil.
     """
     perfil = getattr(user, 'perfil', None)
-    
-    if not perfil:
-        return False
-
-    if perfil.rol in ['Administrador', 'Subadministrador', 'Supervisión']:
-        return perfil.sucursal and perfil.sucursal.id == sucursal_id
-
-    return False
+    return getattr(perfil, 'rol', None) if perfil else None
 
 
 def role_and_sucursales(user):
     """
-    Retorna el rol del usuario y las sucursales a las que tiene acceso.
+    Retorna (rol, lista_de_sucursales_permitidas) para el usuario.
+
+    - Administrador / Subadministrador: acceso a TODAS las sucursales.
+    - Cajero / Supervisión: solo a su sucursal asignada (si existe).
+    - Sin perfil: (None, [])
     """
     perfil = getattr(user, 'perfil', None)
-    
     if not perfil:
         return None, []
 
-    if perfil.rol == 'Administrador':
-        return 'Administrador', Sucursal.objects.all()
-    elif perfil.rol == 'Supervisión':
-        return 'Supervisión', Sucursal.objects.all()
-    elif hasattr(perfil, 'sucursal'):
+    if perfil.rol in ['Administrador', 'Subadministrador']:
+        return perfil.rol, list(Sucursal.objects.all())
+    elif perfil.sucursal:
         return perfil.rol, [perfil.sucursal]
     else:
         return perfil.rol, []
+
+
+def role_and_sucursal(user, sucursal_id):
+    """
+    True si el usuario puede operar sobre la sucursal indicada (por id).
+    Implementado sobre role_and_sucursales().
+    """
+    rol, sucursales = role_and_sucursales(user)
+    return any(s.id == sucursal_id for s in sucursales)
