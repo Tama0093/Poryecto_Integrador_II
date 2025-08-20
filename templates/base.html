@@ -16,6 +16,15 @@
       <a class="navbar-brand" href="{% url 'home' %}">Inventario</a>
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav me-auto">
+
+        {% if user.is_authenticated and role in "Administrador Subadministrador Supervisión" %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'reportes_home' %}">Reportes</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'reportes_dashboard' %}">Dashboard</a></li>
+        {% endif %}
+
+
+    
+        
           {% if user.is_authenticated %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'producto_list' %}">Productos</a>

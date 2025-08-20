@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Dashboard de ventas{% endblock %}
+
+{% block content %}
+<h2 class="mb-3">Dashboard de ventas</h2>
+
+<form class="card p-3 mb-3 shadow-sm" method="get">
+  <div class="row g-3">
+    <div class="col-md-3">
+      <label class="form-label">Desde</label>
+      <input type="date" class="form-control" name="desde" value="{{ desde|date:'Y-m-d' }}">
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Hasta</label>
+      <input type="date" class="form-control" name="hasta" value="{{ hasta|date:'Y-m-d' }}">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Sucursal</label>
+      <select class="form-select" name="sucursal">
+        <option value="all" {% if sucursal_param == 'all' %}selected{% endif %}>Todas (según permisos)</option>
+        {% for s in sucursales %}
+          <option value="{{ s.id }}" {% if s.id|stringformat:"s" == sucursal_param %}selected{% endif %}>{{ s.nombre }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+      <button class="btn btn-primary w-100" type="submit">Actualizar</button>
+    </div>
+  </div>
+</form>
+
+<div class="row g-3">
+  <div class="col-12">
+    <div class="card p-3 shadow-sm">
+      <h5 class="mb-3">Ventas por día</h5>
+      <canvas id="chartDia" height="90"></canvas>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="card p-3 shadow-sm">
+      <h5 class="mb-3">Top productos (por total)</h5>
+      <canvas id="chartProd" height="90"></canvas>
+    </div>
+  </div>
+</div>
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+  const labelsDias = {{ labels_dias|safe }};
+  const dataDias   = {{ data_dias|safe }};
+  const labelsProd = {{ labels_prod|safe }};
+  const dataProd   = {{ data_prod|safe }};
+
+  // Línea: ventas por día
+  const ctx1 = document.getElementById('chartDia');
+  new Chart(ctx1, {
+    type: 'line',
+    data: {
+      labels: labelsDias,
+      datasets: [{ label: 'Total vendido', data: dataDias }]
+    },
+    options: {
+      responsive: true,
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+
+  // Barras: top productos
+  const ctx2 = document.getElementById('chartProd');
+  new Chart(ctx2, {
+    type: 'bar',
+    data: {
+      labels: labelsProd,
+      datasets: [{ label: 'Total vendido', data: dataProd }]
+    },
+    options: {
+      responsive: true,
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+</script>
+{% endblock %}

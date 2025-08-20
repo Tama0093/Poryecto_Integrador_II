@@ -1,6 +1,7 @@
 # inventario/urls.py
 from django.urls import path
 from django.contrib.auth import views as auth_views
+from . import views_reportes
 
 from . import views
 from .views_productos import (
@@ -44,4 +45,11 @@ urlpatterns = [
     path('adminapp/usuarios/nuevo/', views_admin.UsuarioCreateView.as_view(), name='usuario_create'),
     path('adminapp/usuarios/<int:pk>/editar/', views_admin.UsuarioUpdateView.as_view(), name='usuario_update'),
     path('adminapp/usuarios/<int:pk>/eliminar/', views_admin.UsuarioDeleteView.as_view(), name='usuario_delete'),
+
+    path('reportes/', views_reportes.reportes_home, name='reportes_home'),
+    path('reportes/ventas.csv', views_reportes.reporte_ventas_csv, name='reporte_ventas_csv'),
+    path('reportes/ventas.xlsx', views_reportes.reporte_ventas_excel, name='reporte_ventas_excel'),
+    path('reportes/dashboard/', views_reportes.reportes_dashboard, name='reportes_dashboard'),
+
+
 ]

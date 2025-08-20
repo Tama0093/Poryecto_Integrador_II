@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Reportes de ventas{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Reportes de ventas</h2>
+
+<form id="form-filtros" class="card p-3 mb-3 shadow-sm" method="get" action="{% url 'reporte_ventas_csv' %}">
+  <div class="row g-3">
+    <div class="col-md-3">
+      <label class="form-label">Desde</label>
+      <input type="date" class="form-control" name="desde" value="{{ hoy|date:'Y-m-d' }}">
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Hasta</label>
+      <input type="date" class="form-control" name="hasta" value="{{ hoy|date:'Y-m-d' }}">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Sucursal</label>
+      <select class="form-select" name="sucursal">
+        <option value="all">Todas (según permisos)</option>
+        {% for s in sucursales %}
+          <option value="{{ s.id }}">{{ s.nombre }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2 d-flex align-items-end gap-2">
+      <button type="submit" class="btn btn-success w-100">CSV</button>
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-md-12 d-flex gap-2">
+      {% if excel_disponible %}
+      <button type="button" id="btn-excel" class="btn btn-outline-success">Excel</button>
+      {% else %}
+      <button type="button" class="btn btn-outline-secondary" disabled title="Instala openpyxl">Excel</button>
+      {% endif %}
+      <button type="button" id="btn-dashboard" class="btn btn-primary">Ver Dashboard</button>
+    </div>
+  </div>
+</form>
+
+<p class="text-muted">
+  El CSV/Excel respeta tu rol: si eres Cajero/Supervisión, solo exportas tu sucursal.
+</p>
+
+<script>
+  function buildQuery() {
+    const f = document.getElementById('form-filtros');
+    const desde = f.querySelector('[name="desde"]').value;
+    const hasta = f.querySelector('[name="hasta"]').value;
+    const suc = f.querySelector('[name="sucursal"]').value;
+    const params = new URLSearchParams({desde, hasta, sucursal: suc});
+    return params.toString();
+  }
+
+  document.getElementById('btn-excel')?.addEventListener('click', () => {
+    window.location.href = "{% url 'reporte_ventas_excel' %}?" + buildQuery();
+  });
+
+  document.getElementById('btn-dashboard').addEventListener('click', () => {
+    window.location.href = "{% url 'reportes_dashboard' %}?" + buildQuery();
+  });
+</script>
+{% endblock %}
+

@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% block title %}Nueva venta{% endblock %}
-
 {% block content %}
 <h2 class="mb-3">Nueva venta</h2>
 
 <form method="post" class="card p-3 shadow-sm">
   {% csrf_token %}
+  {{ form.non_field_errors }}
   <div class="mb-3">
     <label class="form-label">Producto</label>
     {{ form.producto }} {{ form.producto.errors }}
@@ -18,4 +18,3 @@
   <a class="btn btn-outline-secondary" href="{% url 'caja_detalle' caja.id %}">Cancelar</a>
 </form>
 {% endblock %}
-

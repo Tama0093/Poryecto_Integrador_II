@@ -1,18 +1,20 @@
 {% extends "base.html" %}
-{% block title %}Cerrar Caja{% endblock %}
-
+{% block title %}Cerrar caja{% endblock %}
 {% block content %}
-<h2>Cerrar Caja</h2>
+<h2 class="mb-4">Cerrar caja</h2>
 
-<p><strong>Sucursal:</strong> {{ caja.sucursal }}</p>
-<p><strong>Fecha:</strong> {{ caja.fecha }}</p>
-<p><strong>Monto de apertura:</strong> {{ caja.apertura_monto }}</p>
-<p><strong>Total vendido:</strong> {{ total_vendido }}</p>
-<p><strong>Esperado en caja:</strong> {{ esperado }}</p>
+<div class="card p-3 mb-3">
+  <p><strong>Sucursal:</strong> {{ caja.sucursal }}</p>
+  <p><strong>Fecha:</strong> {{ caja.fecha }}</p>
+  <p><strong>Apertura:</strong> {{ caja.apertura_monto }}</p>
+  <p><strong>Total vendido:</strong> {{ total_vendido }}</p>
+  <p><strong>Esperado en caja:</strong> {{ esperado }}</p>
+</div>
 
 <form method="post">
   {% csrf_token %}
-  <button type="submit" class="btn btn-warning">Confirmar Cierre</button>
-  <a href="{% url 'caja_detalle' caja.id %}" class="btn btn-secondary">Cancelar</a>
+  <a class="btn btn-outline-secondary" href="{% url 'caja_detalle' caja.id %}">Volver</a>
+  <button class="btn btn-warning" type="submit">Confirmar cierre</button>
 </form>
 {% endblock %}
+
