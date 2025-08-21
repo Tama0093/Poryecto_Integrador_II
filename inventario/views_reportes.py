@@ -177,9 +177,10 @@ def reporte_ventas_excel(request):
 @login_required
 def reportes_dashboard(request):
     """
-    Dashboard con dos gráficas:
+    Dashboard con tres gráficas:
       - Ventas por día (últimos 30 días)
       - Ventas por producto (top 10 en el rango)
+      - Ventas por sucursal (en el rango)
     Filtros opcionales: ?desde=YYYY-MM-DD&hasta=YYYY-MM-DD&sucursal=<id|all>
     """
     rol, qs_suc, permitidas_ids = _permitted_sucursales(request)
@@ -206,30 +207,26 @@ def reportes_dashboard(request):
         if permitidas_ids is not None:
             qs = qs.filter(caja__sucursal_id__in=permitidas_ids)
 
-    # Serie diaria
+    # Serie diaria (línea)
     dias = [default_desde + timedelta(days=i) for i in range((hasta - default_desde).days + 1)]
     mapa_dias = {d: 0.0 for d in dias}
-
-    agreg_dia = (
-        qs.values("creado_en__date")
-          .annotate(total=Sum("total"))
-    )
+    agreg_dia = qs.values("creado_en__date").annotate(total=Sum("total"))
     for item in agreg_dia:
         d = item["creado_en__date"]
         if d in mapa_dias:
             mapa_dias[d] = float(item["total"] or 0)
-
     labels_dias = [d.strftime("%Y-%m-%d") for d in dias]
     data_dias = [mapa_dias[d] for d in dias]
 
-    # Top productos (por total vendido)
-    agreg_prod = (
-        qs.values("producto__nombre")
-          .annotate(total=Sum("total"))
-          .order_by("-total")[:10]
-    )
+    # Top productos (barras)
+    agreg_prod = qs.values("producto__nombre").annotate(total=Sum("total")).order_by("-total")[:10]
     labels_prod = [x["producto__nombre"] for x in agreg_prod]
     data_prod = [float(x["total"] or 0) for x in agreg_prod]
+
+    # NUEVO: Ventas por sucursal (dona/barras)
+    agreg_suc = qs.values("caja__sucursal__nombre").annotate(total=Sum("total")).order_by("-total")
+    labels_suc = [x["caja__sucursal__nombre"] or "Sin sucursal" for x in agreg_suc]
+    data_suc = [float(x["total"] or 0) for x in agreg_suc]
 
     ctx = {
         "sucursales": qs_suc,
@@ -239,6 +236,8 @@ def reportes_dashboard(request):
         "data_dias": json.dumps(data_dias),
         "labels_prod": json.dumps(labels_prod),
         "data_prod": json.dumps(data_prod),
+        "labels_suc": json.dumps(labels_suc),
+        "data_suc": json.dumps(data_suc),
         "sucursal_param": sucursal_param,
         "hoy": hoy,
     }

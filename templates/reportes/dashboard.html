@@ -42,6 +42,13 @@
       <canvas id="chartProd" height="90"></canvas>
     </div>
   </div>
+  <!-- NUEVO: Ventas por sucursal -->
+  <div class="col-12">
+    <div class="card p-3 shadow-sm">
+      <h5 class="mb-3">Ventas por sucursal</h5>
+      <canvas id="chartSuc" height="90"></canvas>
+    </div>
+  </div>
 </div>
 
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
@@ -51,33 +58,29 @@
   const dataDias   = {{ data_dias|safe }};
   const labelsProd = {{ labels_prod|safe }};
   const dataProd   = {{ data_prod|safe }};
+  const labelsSuc  = {{ labels_suc|safe }};
+  const dataSuc    = {{ data_suc|safe }};
 
   // Línea: ventas por día
-  const ctx1 = document.getElementById('chartDia');
-  new Chart(ctx1, {
+  new Chart(document.getElementById('chartDia'), {
     type: 'line',
-    data: {
-      labels: labelsDias,
-      datasets: [{ label: 'Total vendido', data: dataDias }]
-    },
-    options: {
-      responsive: true,
-      scales: { y: { beginAtZero: true } }
-    }
+    data: { labels: labelsDias, datasets: [{ label: 'Total vendido', data: dataDias }] },
+    options: { responsive: true, scales: { y: { beginAtZero: true } } }
   });
 
   // Barras: top productos
-  const ctx2 = document.getElementById('chartProd');
-  new Chart(ctx2, {
+  new Chart(document.getElementById('chartProd'), {
     type: 'bar',
-    data: {
-      labels: labelsProd,
-      datasets: [{ label: 'Total vendido', data: dataProd }]
-    },
-    options: {
-      responsive: true,
-      scales: { y: { beginAtZero: true } }
-    }
+    data: { labels: labelsProd, datasets: [{ label: 'Total vendido', data: dataProd }] },
+    options: { responsive: true, scales: { y: { beginAtZero: true } } }
+  });
+
+  // Dona (o barras): ventas por sucursal
+  // Puedes cambiar 'doughnut' por 'bar' si prefieres barras
+  new Chart(document.getElementById('chartSuc'), {
+    type: 'doughnut',
+    data: { labels: labelsSuc, datasets: [{ label: 'Total vendido', data: dataSuc }] },
+    options: { responsive: true }
   });
 </script>
 {% endblock %}
